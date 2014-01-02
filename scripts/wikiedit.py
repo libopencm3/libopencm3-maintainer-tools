@@ -144,6 +144,12 @@ class WikiTable():
 			tab[7] = style;
 			tab[9] = style;
 
+class Git():
+
+	def getrev(self, path)
+		return subprocess.check_output(\
+			"git --git-dir=%s/.git rev-parse --short=10 HEAD" % (path), 
+			shell=False, universal_newlines=True).rstrip('\n')
 
 def browse(path):
 	dirs = [ ]
@@ -153,14 +159,10 @@ def browse(path):
 			dirs.append(dir)
 	return (dirs)
 
-def git_ver(path):
-	return subprocess.check_output("git --git-dir=%s/.git rev-parse --short=10 HEAD" % (path), shell=False, universal_newlines=True).rstrip('\n')
-
-
-
 
 def main():
 
+	git = Git()
 	parser = OptionParser(
 		"Usage: %prog [options] command arg \n\n"
 		"Commands:\n"
@@ -175,7 +177,7 @@ def main():
 		" > wikiedit.py -f<file> init-tree\n"
 		" > wikiedit.py -f<file> update-tree\n"
 		" > wikiedit.py -f<file> [-l<libver> -e<exver>] update-gitver\n"
-		, version="%prog version 0.2")
+		, version="%prog version 0.3")
 
 	parser.add_option("-q", "--quiet", action="store_const", const=0, dest="verbose", default=1, 
 		help="Be very silent")
@@ -227,6 +229,7 @@ def main():
 		#parser.error("Missing required arguments (-t)")
 		options.tree = "../../libopencm3-examples/"
 		# TODO: get repository root from GIT
+		# TODO: Check for valid GIT tree
 	
 	if (options.subtree == None):
 		options.subtree = "/examples/stm32/f2"
@@ -241,11 +244,11 @@ def main():
 		prt(2, "Using login of current logged user '%s' as username" % (options.user))
 	
 	if needver and (options.exver == None):
-		options.exver = git_ver(options.tree)
+		options.exver = git.getrev(options.tree)
 		prt(2, "Using fetched version of examples '%s'" % (options.exver))
 
 	if needver and (options.libver == None):
-		options.libver = git_ver(options.tree + "libopencm3/")
+		options.libver = git.getrev(options.tree + "libopencm3/")
 		prt(2, "Using fetched version of examples '%s'" % (options.libver))
 
 	# The core
