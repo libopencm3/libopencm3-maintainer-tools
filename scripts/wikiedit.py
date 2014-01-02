@@ -17,6 +17,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library. If not, see <http://www.gnu.org/licenses/>.
 
+# example of use
+# ./wikiedit.py -f f0.wiki -t ../../libopencm3-examples/ -s examples/stm32/f0 init-tree
+# ./wikiedit.py -f f0.wiki -t ../../libopencm3-examples/ -s examples/stm32/f0 update-gitver
+
 import sys
 import os
 import os.path
@@ -41,13 +45,13 @@ class WikiTable():
 	# The skeleton for the new additions
 	#
 	__skeleton = """\
-== Skeleton ==
+=== Skeleton ===
 
 {| border="0" style="font-size: smaller; background-color: #eeeeee" bgcolor="#eeeeee"
 
 |- valign="top"
 |- bgcolor="#6699ff"
-|Example || Example version || Library version || Who || Date || Status || BMP || OOCD || OOCD Serial || STLINK || STFLASH
+|Example || Example version || Library version || Who || Date || Status 
 
 <!-- BEGIN UPDATE -->
 
@@ -58,7 +62,7 @@ class WikiTable():
 
 	def __init__(self):
 		self.parse(self.__skeleton.splitlines(1))
-	
+
 	########################################################################
 	# Deserialize the table from the list of lines
 	#
@@ -71,17 +75,17 @@ class WikiTable():
 		for line in lines:
 			if line.find("END UPDATE") != -1:
 				curpos = 2
-			
+
 			if curpos == 0:
 				self.header.append(line)
 			elif curpos == 1:
 				text.append(line)
 			elif curpos == 2:
 				self.footer.append(line)
-			
+
 			if line.find("BEGIN UPDATE") != -1:
 				curpos = 1
-		
+
 		total = ""
 		for line in text:
 			ln = line.rstrip('\n')
@@ -107,7 +111,7 @@ class WikiTable():
 			text.append("\n")
 		text.extend(self.footer)
 		return (text)
-	
+
 	########################################################################
 	# Append the missing directories
 	#
@@ -127,19 +131,19 @@ class WikiTable():
 			if (tab[4].count(options.exver) == 0) \
 				or (tab[6].count(options.libver) == 0): 
 				style = 'style="background:yellow"'
-	
+
 			if (tab[8].count("&mdash;") > 0):
 				style = 'style="background:orange"'
-	
+
 			if tab[1].find(style) == -1:
 				prt(1, "Example state touched '%s'" % (tab[2].strip()))
-		
+
 			tab[1] = style;
 			tab[3] = style;
 			tab[5] = style;
 			tab[7] = style;
 			tab[9] = style;
-	
+
 
 def browse(path):
 	dirs = [ ]
@@ -149,80 +153,14 @@ def browse(path):
 			dirs.append(dir)
 	return (dirs)
 
-
-
-def write_file(wt):
-	global options
-	
-	text = wt.serialize()
-	
-	if options.backup:
-		shutil.copy2(options.file, options.file+".bak")
-		prt(2, "Examples wiki file backupped to '%s'." % (options.file + ".bak"))
-
-	with open(options.file, "w") as f:
-		f.writelines(text)
-	
-	prt(1, "Examples wiki file updated.")
-
-
 def git_ver(path):
 	return subprocess.check_output("git --git-dir=%s/.git rev-parse --short=10 HEAD" % (path), shell=False, universal_newlines=True).rstrip('\n')
 
 
 
-################################################################################
-# Commands 
-def cmd_init_tree():
-	global options
-	
-	wt = WikiTable()	
-	
-	dirs = browse(options.tree + "/examples/stm32/f2")
-	wt.do_append_rows(dirs)
-	
-	write_file(wt)
-
-def cmd_update_tree():
-	global options
-	
-	dirs = browse(options.tree + "/examples/stm32/f2")
-
-	with open(options.file) as f:
-		lines = f.readlines()
-	
-	wt = WikiTable()
-	wt.parse(lines)
-
-	# check all dirs involved
-	for tab in wt.table:
-		try:
-			dirs.remove(tab[2].strip())
-		except:
-			prt(1, "Example no longer exists '%s'" % (tab[2].strip()))
-	
-	# append nonexistent dirs
-	wt.do_append_rows(dirs)
-
-	write_file(wt)
-
-def cmd_update_gitver():
-	global options
-
-	with open(options.file) as f:
-		lines = f.readlines()
-	
-	wt = WikiTable()
-	wt.parse(lines)
-
-	# recolorize the table
-	wt.do_update_colors()
-
-	write_file(wt)
-
 
 def main():
-	
+
 	parser = OptionParser(
 		"Usage: %prog [options] command arg \n\n"
 		"Commands:\n"
@@ -232,22 +170,33 @@ def main():
 		"  update-tree\t Update the examples tree\n"
 		"  update-gitver\t Update table to the actual git version\n\n"
 		"Examples:\n"
-		" > edit.py -f<file> -t<tree> [-u<user> -l<libver> -e<exver>] pass ./brd/example\n"
-		" > edit.py -f<file> -t<tree> [-u<user> -l<libver> -e<exver>] fail ./brd/example\n"
-		" > edit.py -f<file> -t<tree> init-tree\n"
-		" > edit.py -f<file> -t<tree> update-tree\n"
-		" > edit.py -f<file> -t<tree> [-l<libver> -e<exver>] update-gitver\n"
-		, version="%prog version 0.1")
-	
-	parser.add_option("-q", "--quiet", action="store_const", const=0, dest="verbose", default=1, help="Be very silent")
-	parser.add_option("-v", "--verbose", action="store_const", const=2, dest="verbose", help="Print debugging messages")
-	parser.add_option("-b", "--backup", action="store_true", dest="backup", default=0, help="Backup the wiki database file before parse")
-	
+		" > wikiedit.py -f<file> [-u<user> -l<libver> -e<exver>] pass ./brd/example\n"
+		" > wikiedit.py -f<file> [-u<user> -l<libver> -e<exver>] fail ./brd/example\n"
+		" > wikiedit.py -f<file> init-tree\n"
+		" > wikiedit.py -f<file> update-tree\n"
+		" > wikiedit.py -f<file> [-l<libver> -e<exver>] update-gitver\n"
+		, version="%prog version 0.2")
+
+	parser.add_option("-q", "--quiet", action="store_const", const=0, dest="verbose", default=1, 
+		help="Be very silent")
+	parser.add_option("-v", "--verbose", action="store_const", const=2, dest="verbose", 
+		help="Print debugging messages")
+	parser.add_option("-b", "--backup", action="store_true", dest="backup", default=0,
+		help="Backup the wiki database file before parse")
+
 	group = OptionGroup(parser, "Source options")
-	group.add_option("-f", "--file", action="store", dest="file", help="Filename of the wiki database file")
-	group.add_option("-t", "--tree", action="store", dest="tree", help="Path to the current examples repository. If not specified, the LOCM3_EXAMPLES environment variable will be used")
+	group.add_option("-f", "--file", action="store", dest="file", 
+		help="Filename of the wiki database file")
+	group.add_option("-t", "--tree", action="store", dest="tree", 
+		help="Path to the current examples repository. If not specified,"
+		" the LOCM3_EXAMPLES environment variable will be used. "
+		" If this variable doesn't exists, the current working directory"
+		" will be used")
+	group.add_option("-s", "--subtree", action="store", dest="subtree",
+		help="Subtree of the examples in the examples repository.")
+
 	parser.add_option_group(group)
-	
+
 	group = OptionGroup(parser, "Git Options")
 	group.add_option("-u","--user", action="store", type="string", dest="user", 
 		help="Nickname of the tester. [Current user login by default]");
@@ -259,56 +208,103 @@ def main():
 	
 
 	global options
-	(options,args) = parser.parse_args()
-	
+	(options, args) = parser.parse_args()
+
 	#argument check
 	if len(args) < 1:
 		parser.error("Command parameter is required")
 
-	if (options.file == None):
-		#parser.error("git: Missing required arguments (-f)")
-		options.file = "../wiki/stm32f2.wiki"
-	
+	needver = (args[0] == "update-gitver") or (args[0] == "pass")\
+			or (args[0] == "fail")
+
+	needfile = (args[0] != "init-tree")
+
 	if (options.tree == None):
 		options.tree = os.environ.get('LOCM3_EXAMPLES')
 		prt(2, "Using tree from the environment '%s'" % (options.tree))
-		
-	
+
 	if (options.tree == None):
-		#parser.error("git: Missing required arguments (-t)")
+		#parser.error("Missing required arguments (-t)")
 		options.tree = "../../libopencm3-examples/"
-		
+		# TODO: get repository root from GIT
 	
+	if (options.subtree == None):
+		options.subtree = "/examples/stm32/f2"
+		# TODO: get current path of WD in specified root from GIT.
+	
+	if (options.file == None):
+		parser.error("Missing required arguments (-f)")
+		# TODO: if file isn't required, build one for user from subtree by "tr"
+
 	if (options.user == None):
 		options.user = os.getlogin()
 		prt(2, "Using login of current logged user '%s' as username" % (options.user))
-
-	needver = (args[0] == "update-gitver") or (args[0] == "pass") or (args[0] == "fail")
 	
 	if needver and (options.exver == None):
 		options.exver = git_ver(options.tree)
 		prt(2, "Using fetched version of examples '%s'" % (options.exver))
-	
+
 	if needver and (options.libver == None):
 		options.libver = git_ver(options.tree + "libopencm3/")
 		prt(2, "Using fetched version of examples '%s'" % (options.libver))
+
+	# The core
 	
+	wt = WikiTable()
 	
+	if needfile:
+		with open(options.file) as f:
+			lines = f.readlines()
+		wt.parse(lines)
 	
-	# The main body
-	
+	########################################################################
 	if args[0] == "init-tree":
-		cmd_init_tree()
+	
+		dirs = browse(options.tree + options.subtree)
+		wt.do_append_rows(dirs)
+	
+	########################################################################
 	elif args[0] == "update-tree":
-		cmd_update_tree()
+		
+		dirs = browse(options.tree + options.subtree)
+
+		# check all dirs involved
+		for tab in wt.table:
+			try:
+				dirs.remove(tab[2].strip())
+			except:
+				prt(1, "Example no longer exists '%s'" % (tab[2].strip()))
+		
+		# append nonexistent dirs
+		wt.do_append_rows(dirs)
+	
+	########################################################################
 	elif args[0] == "update-gitver":
-		cmd_update_gitver()
+	
+		wt.do_update_colors()
+	
+	########################################################################
 	elif args[0] == "pass":
 		pass
+	
+	########################################################################
 	elif args[0] == "fail":
 		pass
+	
+	########################################################################
 	else:
 		parser.error("Unknown command: '%s'" % (args[0]))
+		
+	if options.backup:
+		shutil.copy2(options.file, options.file+".bak")
+		prt(2, "Examples wiki file backupped to '%s'." % (options.file + ".bak"))
+		
+	text = wt.serialize()
+	
+	with open(options.file, "w") as f:
+		f.writelines(text)
+	
+	prt(1, "Examples wiki file updated.")
 
 
 
