@@ -26,6 +26,7 @@ import os
 import os.path
 import shutil
 import subprocess
+import time
 from optparse import OptionParser, OptionGroup
 
 global options
@@ -126,6 +127,7 @@ class WikiTable():
 	# Update color of each row to match its status
 	#
 	def do_update_colors(self):
+		global options
 		for tab in self.table:
 			style = 'style="background:lime"'
 			if (tab[4].count(options.exver) == 0) \
@@ -143,10 +145,24 @@ class WikiTable():
 			tab[5] = style;
 			tab[7] = style;
 			tab[9] = style;
+			
+	########################################################################
+	# Update status of example
+	#
+	def do_edit(self,example):
+		global options
+		for tab in self.table:
+			if tab[2].count(example) > 0:
+				tab[4] = options.exver
+				tab[6] = options.libver
+				tab[8] = options.user
+				tab[10] = time.strftime("%Y-%m-%d %H:%M GMT",time.gmtime())
+				tab[12] = options.message
+				prt(1, "Example edited '%s'" % (tab[2].strip()))
 
 class Git():
 
-	def getrev(self, path)
+	def getrev(self, path):
 		return subprocess.check_output(\
 			"git --git-dir=%s/.git rev-parse --short=10 HEAD" % (path), 
 			shell=False, universal_newlines=True).rstrip('\n')
@@ -177,7 +193,7 @@ def main():
 		" > wikiedit.py -f<file> init-tree\n"
 		" > wikiedit.py -f<file> update-tree\n"
 		" > wikiedit.py -f<file> [-l<libver> -e<exver>] update-gitver\n"
-		, version="%prog version 0.3")
+		, version="%prog version 0.4")
 
 	parser.add_option("-q", "--quiet", action="store_const", const=0, dest="verbose", default=1, 
 		help="Be very silent")
@@ -185,6 +201,8 @@ def main():
 		help="Print debugging messages")
 	parser.add_option("-b", "--backup", action="store_true", dest="backup", default=0,
 		help="Backup the wiki database file before parse")
+	parser.add_option("-m", "--message", action="store", dest="message",
+		help="Message to be written to pass/fail test result colon. Defaults to 'Pass' or 'Fail' depends on command")
 
 	group = OptionGroup(parser, "Source options")
 	group.add_option("-f", "--file", action="store", dest="file", 
@@ -250,6 +268,12 @@ def main():
 	if needver and (options.libver == None):
 		options.libver = git.getrev(options.tree + "libopencm3/")
 		prt(2, "Using fetched version of examples '%s'" % (options.libver))
+		
+	if (options.message == None) and (args[0] == "pass"):
+		options.message = "Pass"
+		
+	if (options.message == None):
+		options.message = "Failed"
 
 	# The core
 	
@@ -287,12 +311,11 @@ def main():
 		wt.do_update_colors()
 	
 	########################################################################
-	elif args[0] == "pass":
-		pass
+	elif (args[0] == "pass") or (args[0] == "fail"):
 	
-	########################################################################
-	elif args[0] == "fail":
-		pass
+		while len(args) > 1:
+			wt.do_edit(args[1])
+			del args[1]
 	
 	########################################################################
 	else:
