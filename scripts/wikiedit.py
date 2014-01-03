@@ -130,6 +130,10 @@ class WikiTable():
 		global options
 		for tab in self.table:
 			style = 'style="background:lime"'
+
+			if (tab[12] != "Pass"):
+				style = 'style="background:red"'
+
 			if (tab[4].count(options.exver) == 0) \
 				or (tab[6].count(options.libver) == 0): 
 				style = 'style="background:yellow"'
@@ -140,11 +144,12 @@ class WikiTable():
 			if tab[1].find(style) == -1:
 				prt(1, "Example state touched '%s'" % (tab[2].strip()))
 
-			tab[1] = style;
-			tab[3] = style;
-			tab[5] = style;
-			tab[7] = style;
-			tab[9] = style;
+			tab[1] = style
+			tab[3] = style
+			tab[5] = style
+			tab[7] = style
+			tab[9] = style
+			tab[11] = style
 			
 	########################################################################
 	# Update status of example
