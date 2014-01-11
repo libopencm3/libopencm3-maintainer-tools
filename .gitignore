@@ -1,0 +1,14 @@
+*.bin
+
+/tests/api/gpio_ledblink/*.d
+
+/tests/api/gpio_ledblink/*.hex
+
+/tests/api/gpio_ledblink/*.elf
+/tests/api/gpio_ledblink/*.map
+
+/tests/api/gpio_ledblink/*.o
+
+/tests/api/gpio_ledblink/*.srec
+
+/tests/api/gpio_ledblink/*.list

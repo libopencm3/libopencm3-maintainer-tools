@@ -1,0 +1,10 @@
+-------------------------------------------------------------------------------
+README
+-------------------------------------------------------------------------------
+
+This test is constructed to test the gpio by blinking with LED's on board.
+
+Operation:
+----------
+
+This test must blink with all LED's on board
