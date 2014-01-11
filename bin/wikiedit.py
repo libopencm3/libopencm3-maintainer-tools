@@ -25,8 +25,8 @@ import sys
 import os
 import os.path
 import shutil
-import subprocess
 import time
+import gitutil
 from optparse import OptionParser, OptionGroup
 
 global options
@@ -165,13 +165,6 @@ class WikiTable():
 				tab[12] = options.message
 				prt(1, "Example edited '%s'" % (tab[2].strip()))
 
-class Git():
-
-	def getrev(self, path):
-		return subprocess.check_output(\
-			"git --git-dir=%s/.git rev-parse --short=10 HEAD" % (path), 
-			shell=False, universal_newlines=True).rstrip('\n')
-
 def browse(path):
 	dirs = [ ]
 	for x in os.walk(path):
@@ -183,7 +176,6 @@ def browse(path):
 
 def main():
 
-	git = Git()
 	parser = OptionParser(
 		"Usage: %prog [options] command arg \n\n"
 		"Commands:\n"
@@ -267,11 +259,11 @@ def main():
 		prt(2, "Using login of current logged user '%s' as username" % (options.user))
 	
 	if needver and (options.exver == None):
-		options.exver = git.getrev(options.tree)
+		options.exver = gitutil.shortrev(options.tree)
 		prt(2, "Using fetched version of examples '%s'" % (options.exver))
 
 	if needver and (options.libver == None):
-		options.libver = git.getrev(options.tree + "libopencm3/")
+		options.libver = gitutil.shortrev(options.tree + "libopencm3/")
 		prt(2, "Using fetched version of examples '%s'" % (options.libver))
 		
 	if (options.message == None) and (args[0] == "pass"):
