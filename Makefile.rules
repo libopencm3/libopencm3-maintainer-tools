@@ -115,6 +115,19 @@ endif
 LDLIBS		+= -l$(LIBNAME)
 LDLIBS		+= -Wl,--start-group -lc -lgcc -lnosys -Wl,--end-group
 
+ifneq ($(DEVICE),)
+
+LDSCRIPT	:=$(DEVICE).ld
+GENLINK_DEFS	:=$(shell awk -v PAT="$(DEVICE)" -v MODE="DEFS" -f $(SCRIPT_DIR)/genlink.awk $(OPENCM3_DIR)/ld/devices.data 2>/dev/null)
+GENLINK_ARCH	:=$(shell awk -v PAT="$(DEVICE)" -v MODE="ARCH" -f $(SCRIPT_DIR)/genlink.awk $(OPENCM3_DIR)/ld/devices.data 2>/dev/null)
+GENLINK_LIB	:=$(shell awk -v PAT="$(DEVICE)" -v MODE="LIB" -f $(SCRIPT_DIR)/genlink.awk $(OPENCM3_DIR)/ld/devices.data 2>/dev/null)
+DEFS		+=$(GENLINK_DEFS)
+ARCH_FLAGS	:=$(GENLINK_ARCH)
+LIBNAME		:=$(strip $(subst -l,,$(GENLINK_LIB)))
+C := $(shell echo "$(LIB_DIR)/lib$(LIBNAME).a")
+
+endif
+
 ###############################################################################
 ###############################################################################
 ###############################################################################
@@ -181,6 +194,17 @@ styleclean: $(STYLECHECKFILES:=.styleclean)
 
 %.styleclean:
 	$(Q)rm -f $*.stylecheck;
+
+
+ifneq ($(DEVICE),)
+$(LDSCRIPT):$(OPENCM3_DIR)/ld/linker.ld.S Makefile
+ifeq ($(GENLINK_DEFS),)
+	$(error unknown device $(DEVICE) for the linker. Cannot generate ldscript)
+endif
+	@#printf "  GENLNK  $<\n"
+	$(Q)$(CPP) $(GENLINK_DEFS) -P $< > $@
+endif
+
 
 
 %.stlink-flash: %.bin
