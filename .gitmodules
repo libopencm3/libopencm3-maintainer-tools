@@ -1,0 +1,6 @@
+[submodule "wiki"]
+	path = wiki
+	url = https://github.com/libopencm3/libopencm3-maintainer-tools.wiki
+[submodule "libopencm3"]
+	path = libopencm3
+	url = https://github.com/libopencm3/libopencm3.git
