@@ -1,0 +1,1 @@
+DEVICE		:= stm32f051r8t6

@@ -30,12 +30,28 @@ static void delay(int clocks)
 
 int main(void)
 {
-	rcc_periph_clock_enable(LED_CLOCK);
+	uint32_t i;
 
-	gpio_mode_setup(LED_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, LED_PIN);
+	/* Initialize all LED's */
+	for (i = 0; i < BOARD_NLEDS; i++) {
+
+		/* Enable the clocks for the port of specified LED */
+		rcc_periph_clock_enable(board_leds[i].clock);
+
+		/* Set the LED pin to the output */
+		gpio_mode_setup(board_leds[i].port,
+				GPIO_MODE_OUTPUT,
+				GPIO_PUPD_NONE,
+				board_leds[i].pin);
+	}
 
 	while (1) {
-		gpio_toggle(LED_PORT, LED_PIN);
+		/* Toggle all leds on the board */
+		for (i = 0; i < BOARD_NLEDS; i++) {
+			gpio_toggle(board_leds[i].port, board_leds[i].pin);
+		}
+
+		/* loop some clocks to slow down the blinking */
 		delay(1000000);
 	}
 }

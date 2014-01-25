@@ -5,18 +5,21 @@
 # error Preprocessor directive 'BOARD' not specified. Stop.
 #endif
 
-#define stm32f0discovery	0x01
+struct pin_config
+{
+	uint32_t port;
+	uint32_t pin;
+	uint32_t clock;
+};
 
-#if (BOARD == stm32f0discovery)
+/******************************************************************************
+ * Board-specific file inclusion "board/${BOARD}.h" file)
+ ******************************************************************************/
 
-# define LED_CLOCK	RCC_GPIOC
-# define LED_PORT	GPIOC
-# define LED_PIN	GPIO8
+#define __QUOTE(m)		#m
+#define __FN(a,b,c)		__QUOTE(a/b.c)
+#define __BOARD_H_FILE(brd)	__FN(boards,brd,h)
 
-#else
-
-# error Unsupported board! Stop.
-
-#endif
+#include __BOARD_H_FILE(BOARD)
 
 #endif /* __BOARD_H__ */
