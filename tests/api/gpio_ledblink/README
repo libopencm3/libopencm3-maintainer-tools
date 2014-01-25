@@ -4,6 +4,12 @@ README
 
 This test is constructed to test the gpio by blinking with LED's on board.
 
+You can find the full list of supported boards in the file boards.list. 
+
+'make BOARD=<board name>' will make the test for the specified board.
+
+'make BOARD=<board name> clean' will clean the generated files.
+
 Operation:
 ----------
 
