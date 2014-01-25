@@ -17,6 +17,10 @@
 ## along with this library.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
+ifeq ($(strip $(BOARD)),)
+$(error Board not specified. please run "make BOARD=<board name>")
+endif
+
 BINARY		= ledblink
 OPENCM3_DIR	= ../../../libopencm3
 CPPFLAGS	+= -DBOARD=$(BOARD)
