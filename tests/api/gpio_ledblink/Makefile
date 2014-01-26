@@ -23,7 +23,7 @@ endif
 
 BINARY		= ledblink
 OPENCM3_DIR	= ../../../libopencm3
-CPPFLAGS	+= -DBOARD=$(BOARD)
+CPPFLAGS	+= -DBOARD=$(BOARD) -I../_common
 
-include boards/$(BOARD).Makefile
+include ../_common/boards/$(BOARD).Makefile
 include ../../../Makefile.rules
