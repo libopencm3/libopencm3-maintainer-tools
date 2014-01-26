@@ -21,49 +21,9 @@
 
 #define BOARD_NAME		"Waveshare Open103Z"
 
-/******************************************************************************
- * LED configuration
- ******************************************************************************/
-
-struct pin_config board_leds[] = {
-	{	/* LED1 */
-		.port = GPIOF,
-		.pin = GPIO6,
-		.clock = RCC_GPIOF,
-	} , {	/* LED2 */
-		.port = GPIOF,
-		.pin = GPIO7,
-		.clock = RCC_GPIOF,
-	} , {	/* LED3 */
-		.port = GPIOF,
-		.pin = GPIO8,
-		.clock = RCC_GPIOF,
-	} , {	/* LED4 */
-		.port = GPIOF,
-		.pin = GPIO9,
-		.clock = RCC_GPIOF,
-	}
-};
-
-#define BOARD_NLEDS	sizeof(board_leds) / sizeof(struct pin_config)
-
-/******************************************************************************
- * BUTTON configuration
- ******************************************************************************/
-
-struct pin_config board_btns[] = {
-	{	/* USER KEY */
-		.port = GPIOG,
-		.pin = GPIO6,
-		.clock = RCC_GPIOG,
-	}
-};
-
-#define BOARD_NBTNS	sizeof(board_btns) / sizeof(struct pin_config)
-
-/******************************************************************************
- * Serial port configuration
- ******************************************************************************/
+#define BOARD_NLEDS		4
+#define BOARD_NBTNS		1
+#define BOARD_NUSARTS		0
 
 
 #endif /* __OPEN103Z_H__ */

@@ -21,49 +21,10 @@
 
 #define BOARD_NAME		"Waveshare Open103Z"
 
-/******************************************************************************
- * LED configuration
- ******************************************************************************/
+#define BOARD_NLEDS		4
+#define BOARD_NBTNS		1
+#define BOARD_NUSARTS		0
 
-struct pin_config board_leds[] = {
-	{	/* LED1 */
-		.port = GPIOD,
-		.pin = GPIO7,
-		.clock = RCC_GPIOD,
-	} , {	/* LED2 */
-		.port = GPIOD,
-		.pin = GPIO13,
-		.clock = RCC_GPIOD,
-	} , {	/* LED3 */
-		.port = GPIOD,
-		.pin = GPIO3,
-		.clock = RCC_GPIOD,
-	} , {	/* LED4 */
-		.port = GPIOD,
-		.pin = GPIO4,
-		.clock = RCC_GPIOD,
-	}
-};
-
-#define BOARD_NLEDS	sizeof(board_leds) / sizeof(struct pin_config)
-
-/******************************************************************************
- * BUTTON configuration
- ******************************************************************************/
-
-struct pin_config board_btns[] = {
-	{	/* USER KEY */
-		.port = GPIOB,
-		.pin = GPIO9,
-		.clock = RCC_GPIOB,
-	}
-};
-
-#define BOARD_NBTNS	sizeof(board_btns) / sizeof(struct pin_config)
-
-/******************************************************************************
- * Serial port configuration
- ******************************************************************************/
 
 
 #endif /* __STM3210CEVAL_H__ */

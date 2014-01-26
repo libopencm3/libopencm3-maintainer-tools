@@ -16,45 +16,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef __BOARD_H__
-#define __BOARD_H__
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/usart.h>
+#include "board.h"
 
-#if !defined(BOARD)
-# error Preprocessor directive 'BOARD' not specified. Stop.
-#endif
+/******************************************************************************
+ * LED configuration
+ ******************************************************************************/
 
-struct pin_config
-{
-	uint32_t port;
-	uint32_t pin;
-	uint32_t clock;
-};
-
-struct usart_config
-{
-	uint32_t port;
-	uint32_t clock;
-	uint32_t af;
-	struct pin_config rxpin;
-	struct pin_config txpin;
+struct pin_config board_leds[] = {
+	{	/* LD4 Blue */
+		.port = GPIOC,
+		.pin = GPIO8,
+		.clock = RCC_GPIOC,
+	} , {	/* LD3 Green */
+		.port = GPIOC,
+		.pin = GPIO9,
+		.clock = RCC_GPIOC,
+	}
 };
 
 /******************************************************************************
- * Board-specific file inclusion "board/${BOARD}.h" file)
+ * BUTTON configuration
  ******************************************************************************/
 
-#define __QUOTE(m)		#m
-#define __FN(a,b,c)		__QUOTE(a/b.c)
-#define __BOARD_H_FILE(brd)	__FN(boards,brd,h)
-
-#include __BOARD_H_FILE(BOARD)
+struct pin_config board_btns[] = {
+	{	/* USER KEY */
+		.port = GPIOA,
+		.pin = GPIO0,
+		.clock = RCC_GPIOA,
+	}
+};
 
 /******************************************************************************
- * Board-specific configuration arrays
+ * Serial port configuration
  ******************************************************************************/
- 
-extern struct pin_config board_leds[BOARD_NLEDS];
-extern struct pin_config board_btns[BOARD_NBTNS];
-extern struct usart_config board_usarts[BOARD_NUSARTS];
 
-#endif /* __BOARD_H__ */
+struct usart_config board_usarts[] = {
+};

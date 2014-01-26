@@ -21,45 +21,11 @@
 
 #define BOARD_NAME		"STM32L152C-Discovery"
 
-/******************************************************************************
- * LED configuration
- ******************************************************************************/
-
-struct pin_config board_leds[] = {
-	{	/* Blue LED */
-		.port = GPIOB,
-		.pin = GPIO6,
-		.clock = RCC_GPIOB,
-	} , {	/* Green LED */
-		.port = GPIOB,
-		.pin = GPIO7,
-		.clock = RCC_GPIOB,
-	}
-};
-
-#define BOARD_NLEDS	sizeof(board_leds) / sizeof(struct pin_config)
+#define BOARD_NLEDS		2
+#define BOARD_NBTNS		1
+#define BOARD_NUSARTS		0
 
 #define BOARD_LED_GREEN		1
 #define BOARD_LED_BLUE		0
-
-/******************************************************************************
- * BUTTON configuration
- ******************************************************************************/
-
-struct pin_config board_btns[] = {
-	{	/* USER KEY */
-		.port = GPIOA,
-		.pin = GPIO0,
-		.clock = RCC_GPIOA,
-	}
-};
-
-#define BOARD_NBTNS	sizeof(board_btns) / sizeof(struct pin_config)
-
-
-/******************************************************************************
- * Serial port configuration
- ******************************************************************************/
-
 
 #endif /* __STM32L152CDISCOVERY_H__ */

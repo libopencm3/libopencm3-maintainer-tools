@@ -165,16 +165,16 @@ flash: $(BINARY).flash
 	$(Q)$(LD) $(LDFLAGS) $(ARCH_FLAGS) $(OBJS) $(LDLIBS) -o $(*).elf
 
 %.o: %.c
-	@#printf "  CC      $(*).c\n"
-	$(Q)$(CC) $(CFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $(*).o -c $(*).c
+	@#printf "  CC      $<\n"
+	$(Q)$(CC) $(CFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $(*).o -c $<
 
 %.o: %.cxx
-	@#printf "  CXX     $(*).cxx\n"
-	$(Q)$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $(*).o -c $(*).cxx
+	@#printf "  CXX     $<\n"
+	$(Q)$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $(*).o -c $<
 
 %.o: %.cpp
 	@#printf "  CXX     $(*).cpp\n"
-	$(Q)$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $(*).o -c $(*).cpp
+	$(Q)$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(ARCH_FLAGS) -o $(*).o -c $<
 
 clean:
 	@#printf "  CLEAN\n"

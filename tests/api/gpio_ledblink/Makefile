@@ -25,5 +25,9 @@ BINARY		= ledblink
 OPENCM3_DIR	= ../../../libopencm3
 CPPFLAGS	+= -DBOARD=$(BOARD) -I../_common
 
+OBJS		+= $(BOARD).o
+
+VPATH		= ../_common ../_common/boards
+
 include ../_common/boards/$(BOARD).Makefile
 include ../../../Makefile.rules

@@ -21,54 +21,14 @@
 
 #define BOARD_NAME		"STM32F4-Discovery"
 
-/******************************************************************************
- * LED configuration
- ******************************************************************************/
+#define BOARD_NLEDS		4
+#define BOARD_NBTNS		1
+#define BOARD_NUSARTS		0
 
-struct pin_config board_leds[] = {
-	{	/* Blue LED LD6 */
-		.port = GPIOD,
-		.pin = GPIO15,
-		.clock = RCC_GPIOD,
-	} , {	/* Green LED LD4 */
-		.port = GPIOD,
-		.pin = GPIO12,
-		.clock = RCC_GPIOD,
-	} , {	/* Orange LED LD3 */
-		.port = GPIOD,
-		.pin = GPIO13,
-		.clock = RCC_GPIOD,
-	} , {	/* Red LED LD5 */
-		.port = GPIOD,
-		.pin = GPIO14,
-		.clock = RCC_GPIOD,
-	}
-};
-
-#define BOARD_NLEDS	sizeof(board_leds) / sizeof(struct pin_config)
 
 #define BOARD_LED_GREEN		1
 #define BOARD_LED_BLUE		0
 #define BOARD_LED_ORANGE	2
 #define BOARD_LED_RED		3
 
-/******************************************************************************
- * BUTTON configuration
- ******************************************************************************/
-
-struct pin_config board_btns[] = {
-	{	/* USER KEY */
-		.port = GPIOA,
-		.pin = GPIO0,
-		.clock = RCC_GPIOA,
-	}
-};
-
-#define BOARD_NBTNS	sizeof(board_btns) / sizeof(struct pin_config)
-
-/******************************************************************************
- * Serial port configuration
- ******************************************************************************/
-
-
-#endif /* __STM32F0DISCOVERY_H__ */
+#endif /* __STM32F4DISCOVERY_H__ */
