@@ -43,6 +43,21 @@ struct pin_config board_leds[] = {
 #define BOARD_LED_BLUE		0
 
 /******************************************************************************
+ * BUTTON configuration
+ ******************************************************************************/
+
+struct pin_config board_btns[] = {
+	{	/* USER KEY */
+		.port = GPIOA,
+		.pin = GPIO0,
+		.clock = RCC_GPIOA,
+	}
+};
+
+#define BOARD_NBTNS	sizeof(board_btns) / sizeof(struct pin_config)
+
+
+/******************************************************************************
  * Serial port configuration
  ******************************************************************************/
 
