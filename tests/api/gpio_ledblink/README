@@ -10,7 +10,10 @@ You can find the full list of supported boards in the file boards.list.
 
 'make BOARD=<board name> clean' will clean the generated files.
 
+'make BOARD=<board name> BMP_PORT=<portname> clean all flash' will rebuild the
+project and flashes it to the board.
+
 Operation:
 ----------
 
-This test must blink with all LED's on board
+This test must blink with all user LED's on board

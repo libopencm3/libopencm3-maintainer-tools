@@ -38,11 +38,19 @@ int main(void)
 		/* Enable the clocks for the port of specified LED */
 		rcc_periph_clock_enable(board_leds[i].clock);
 
+#if defined(STM32F1)
+		/* Set the LED pin to the output */
+		gpio_set_mode(board_leds[i].port,
+				GPIO_MODE_OUTPUT_50_MHZ,
+				GPIO_CNF_OUTPUT_PUSHPULL,
+				board_leds[i].pin);
+#else
 		/* Set the LED pin to the output */
 		gpio_mode_setup(board_leds[i].port,
 				GPIO_MODE_OUTPUT,
 				GPIO_PUPD_NONE,
 				board_leds[i].pin);
+#endif
 	}
 
 	while (1) {
