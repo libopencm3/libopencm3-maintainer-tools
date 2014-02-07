@@ -12,3 +12,10 @@
 /tests/api/gpio_ledblink/*.srec
 
 /tests/api/gpio_ledblink/*.list
+*.d
+*.o
+*.elf
+*.hex
+*.list
+*.srec
+*.map
